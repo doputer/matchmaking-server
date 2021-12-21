@@ -1,8 +1,9 @@
-import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 
-@Processor('match')
-export class MatchConsumer {
+import { Process, Processor } from '@nestjs/bull';
+
+@Processor('queue')
+export class QueueConsumer {
   @Process('transcode')
   handleTranscode(job: Job) {
     console.log('Start transcoding...');

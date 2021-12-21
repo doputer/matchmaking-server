@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { MatchModule } from './api/match/match.module';
+import { QueueModule } from './api/queue/queue.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 
@@ -13,9 +13,7 @@ import { ConfigService } from './config/config.service';
       useFactory: (configService: ConfigService) =>
         configService.mongooseConfig,
     }),
-    MatchModule,
+    QueueModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

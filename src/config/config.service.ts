@@ -112,4 +112,12 @@ export class ConfigService {
       credentials: true,
     };
   }
+
+  get redisConfig() {
+    return {
+      config: {
+        url: `redis://${this.get('REDIS_HOST')}:${this.get('REDIS_PORT')}`,
+      },
+    };
+  }
 }

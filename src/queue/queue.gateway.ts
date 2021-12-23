@@ -11,22 +11,34 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 
+import { QueueService } from './queue.service';
+
 @WebSocketGateway({
   transports: ['websocket'],
-  path: '/queues',
   namespace: 'queues',
   cors: true,
 })
 export class QueueGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly logger: LoggerService) {}
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly queueService: QueueService,
+  ) {}
 
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('queue')
-  handleMessage(@MessageBody() message: string): void {
-    this.server.emit('queue', message);
+  @SubscribeMessage('addQueue')
+  async handleMessage(
+    @MessageBody() player: { id: string; mmr: number },
+  ): Promise<void> {
+    this.server.emit('message', '대기열 등록이 완료되었습니다.');
+
+    await this.queueService.findMatch(player);
+
+    this.server.emit('message', '매치를 찾았습니다!');
+
+    return;
   }
 
   afterInit() {

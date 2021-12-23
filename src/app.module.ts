@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { QueueModule } from './api/queue/queue.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { JobModule } from './job/job.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigService } from './config/config.service';
         configService.mongooseConfig,
     }),
     QueueModule,
+    JobModule,
   ],
 })
 export class AppModule {}

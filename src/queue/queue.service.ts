@@ -36,30 +36,23 @@ export class QueueService {
 
     await match.subscribe('match');
 
-    let isMatch = false;
-
-    while (!isMatch) {
+    while (true) {
       const message: any = await this.getMessage(match);
       const { player1, player2 } = JSON.parse(message);
 
-      this.logger.info('matching...');
-
       if (player1 === player.id || player2 === player.id) {
-        isMatch = true;
         await match.unsubscribe('match');
+
+        return message;
       }
     }
-
-    this.logger.info('finish');
-
-    return;
   }
 
   async findMatch(player: { id: string; mmr: number }) {
     await this.addPlayer(player);
 
-    await this.subscribeMatch(player);
+    const message = await this.subscribeMatch(player);
 
-    return;
+    return JSON.parse(message);
   }
 }

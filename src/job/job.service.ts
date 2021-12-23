@@ -1,15 +1,22 @@
 import Redis from 'ioredis';
 import { LoggerService } from 'src/common/logger/logger.service';
+import { ConfigService } from 'src/config/config.service';
 
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { lastValueFrom, map } from 'rxjs';
 
 @Injectable()
 export class JobService {
   private readonly pool;
   private readonly match;
 
-  constructor(private readonly loggerService: LoggerService) {
+  constructor(
+    private readonly loggerService: LoggerService,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
     this.pool = new Redis({
       host: 'localhost',
       port: 6379,
@@ -32,9 +39,6 @@ export class JobService {
     const player1 = keys[0];
     const player2 = keys[1];
 
-    console.log(player1);
-    console.log(player2);
-
     await this.pool.del(player1);
     await this.pool.del(player2);
 
@@ -44,7 +48,18 @@ export class JobService {
   }
 
   async publishMatch(player1: string, player2: string): Promise<void> {
+    const url = `${this.configService.get('API_SERVER')}/matches`;
+    const body = {
+      player1,
+      player2,
+    };
+
+    const data: any = await lastValueFrom(
+      this.httpService.post(url, body).pipe(map(response => response.data)),
+    );
+
     const match = {
+      matchId: data._id,
       player1,
       player2,
     };

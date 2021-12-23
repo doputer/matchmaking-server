@@ -1,10 +1,11 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { JobService } from './job.service';
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
+  imports: [HttpModule, ScheduleModule.forRoot()],
   providers: [JobService],
 })
 export class JobModule {}

@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -30,13 +31,15 @@ export class QueueGateway
 
   @SubscribeMessage('addQueue')
   async handleMessage(
+    @ConnectedSocket() client: Socket,
     @MessageBody() player: { id: string; mmr: number },
   ): Promise<void> {
-    this.server.emit('message', '대기열 등록이 완료되었습니다.');
+    this.server.to(client.id).emit('message', '대기열 등록이 완료되었습니다.');
 
-    await this.queueService.findMatch(player);
+    const { matchId } = await this.queueService.findMatch(player);
 
-    this.server.emit('message', '매치를 찾았습니다!');
+    this.server.to(client.id).emit('message', '매치를 찾았습니다!');
+    this.server.to(client.id).emit('match', matchId);
 
     return;
   }

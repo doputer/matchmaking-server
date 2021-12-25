@@ -22,6 +22,8 @@ import { QueueService } from './queue.service';
 export class QueueGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  private sockets = [];
+
   constructor(
     private readonly logger: LoggerService,
     private readonly queueService: QueueService,
@@ -30,7 +32,7 @@ export class QueueGateway
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('addQueue')
-  async handleMessage(
+  async handleQueue(
     @ConnectedSocket() client: Socket,
     @MessageBody() player: { id: string; mmr: number },
   ): Promise<void> {
@@ -40,8 +42,6 @@ export class QueueGateway
 
     this.server.to(client.id).emit('message', '매치를 찾았습니다!');
     this.server.to(client.id).emit('match', matchId);
-
-    return;
   }
 
   afterInit() {
@@ -49,10 +49,21 @@ export class QueueGateway
   }
 
   handleConnection(client: Socket) {
+    this.sockets.push(client.id);
+
     this.logger.info(`Client Connected : ${client.id}`);
+
+    this.server.to(client.id).emit('message', {
+      connections: this.sockets.length,
+    });
   }
 
   handleDisconnect(client: Socket) {
+    this.sockets.splice(
+      this.sockets.findIndex(socket => socket === client.id),
+      1,
+    );
+
     this.logger.info(`Client Disconnected : ${client.id}`);
   }
 }

@@ -16,7 +16,7 @@ import { QueueService } from './queue.service';
 
 @WebSocketGateway({
   transports: ['websocket'],
-  namespace: 'queues',
+  namespace: 'queue',
   cors: true,
 })
 export class QueueGateway

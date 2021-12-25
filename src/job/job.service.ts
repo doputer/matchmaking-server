@@ -68,4 +68,18 @@ export class JobService {
 
     return;
   }
+
+  async finishMatch(matchId: string, winner: string, loser: string) {
+    const url = `${this.configService.get('API_SERVER')}/matches/${matchId}`;
+    const body = {
+      winner,
+      loser,
+    };
+
+    await lastValueFrom(
+      this.httpService.patch(url, body).pipe(map(response => response.data)),
+    );
+
+    return;
+  }
 }

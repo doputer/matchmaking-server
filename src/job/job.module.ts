@@ -7,5 +7,6 @@ import { JobService } from './job.service';
 @Module({
   imports: [HttpModule, ScheduleModule.forRoot()],
   providers: [JobService],
+  exports: [JobService],
 })
 export class JobModule {}

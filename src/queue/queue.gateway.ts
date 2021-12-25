@@ -45,13 +45,11 @@ export class QueueGateway
   }
 
   afterInit() {
-    this.logger.warn('socket server is running');
+    return;
   }
 
   handleConnection(client: Socket) {
     this.sockets.push(client.id);
-
-    this.logger.info(`Client Connected : ${client.id}`);
 
     this.server.to(client.id).emit('message', {
       connections: this.sockets.length,
@@ -63,7 +61,5 @@ export class QueueGateway
       this.sockets.findIndex(socket => socket === client.id),
       1,
     );
-
-    this.logger.info(`Client Disconnected : ${client.id}`);
   }
 }

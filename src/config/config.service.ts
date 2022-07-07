@@ -7,6 +7,8 @@ import { ValidationPipeOptions } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { MongooseModuleOptions } from '@nestjs/mongoose';
 
+import { ISwaggerConfig } from './swagger/interface';
+
 export class ConfigService {
   public get(key: string): string {
     return process.env[key];
@@ -27,6 +29,15 @@ export class ConfigService {
   get mongooseConfig(): MongooseModuleOptions {
     return {
       uri: this.get('DB_URI'),
+    };
+  }
+
+  get swaggerConfig(): ISwaggerConfig {
+    return {
+      path: this.get('SWAGGER_PATH') || '/api',
+      title: this.get('SWAGGER_TITLE') || '',
+      description: this.get('SWAGGER_DESCRIPTION'),
+      version: this.get('SWAGGER_VERSION') || '',
     };
   }
 

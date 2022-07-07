@@ -6,6 +6,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { LoggerService } from './common/logger/logger.service';
 import { ConfigService } from './config/config.service';
+import { setupSwagger } from './config/swagger/setup';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -34,6 +35,11 @@ async function bootstrap() {
 
   // Validation
   app.useGlobalPipes(new ValidationPipe(configService.validationConfig));
+
+  // Swagger
+  if (['development'].includes(configService.env)) {
+    setupSwagger(app, configService.swaggerConfig);
+  }
 
   const port = configService.get('PORT');
   const host = configService.get('HOST');

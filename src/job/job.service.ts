@@ -48,7 +48,7 @@ export class JobService {
   }
 
   async publishMatch(player1: string, player2: string): Promise<void> {
-    const url = `${this.configService.get('API_SERVER')}/matches`;
+    const url = `${this.configService.get('API_SERVER')}/games`;
     const body = {
       player1,
       player2,
@@ -70,7 +70,7 @@ export class JobService {
   }
 
   async finishMatch(matchId: string, winner: string, loser: string) {
-    const url = `${this.configService.get('API_SERVER')}/matches/${matchId}`;
+    const url = `${this.configService.get('API_SERVER')}/games/${matchId}`;
     const body = {
       winner,
       loser,

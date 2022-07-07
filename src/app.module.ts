@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { AuthModule } from './api/auth/auth.module';
+import { GameModule } from './api/game/game.module';
+import { UserModule } from './api/user/user.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { JobModule } from './job/job.module';
@@ -15,6 +18,9 @@ import { QueueModule } from './queue/queue.module';
       useFactory: (configService: ConfigService) =>
         configService.mongooseConfig,
     }),
+    AuthModule,
+    UserModule,
+    GameModule,
     QueueModule,
     MatchModule,
     JobModule,

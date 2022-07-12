@@ -25,7 +25,7 @@ import { Auth, AuthSchema } from './auth.schema';
       useFactory: (configService: ConfigService) => {
         return {
           secret: configService.get('SECRET_KEY'),
-          signOptions: { expiresIn: '30m' },
+          signOptions: { expiresIn: '1h' },
         };
       },
     }),
